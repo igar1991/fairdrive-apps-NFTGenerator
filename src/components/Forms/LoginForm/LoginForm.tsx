@@ -50,7 +50,7 @@ const LoginForm: FC = () => {
     <div className="flex flex-col justify-center items-center">
       <AuthenticationHeader
         title="Welcome back"
-        content="Please log in to get access to your photos."
+        content="Please log in to get access to your images."
       />
 
       <div className="w-98 mt-8">

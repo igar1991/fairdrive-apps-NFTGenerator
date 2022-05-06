@@ -17,17 +17,13 @@ const MainNavigationBar: FC<MainNavigationBarProps> = ({ hideComponents }) => {
     <nav>
       <div className="flex justify-between items-center w-full h-16 px-6 bg-button-blue shadow-lg">
         <Link href="/">
-          <a>
-            <Logo />
+          <a className="font-semibold text-3xl text-main-purple">
+            NFT Generator
           </a>
         </Link>
 
         {hideComponents ? null : (
           <div className="flex justify-between items-center mr-4">
-            <div className="mr-10">
-              <SearchBar />
-            </div>
-
             <UserDropdownToggle
               onClickHandler={() => setShowUserDropdown(true)}
             />

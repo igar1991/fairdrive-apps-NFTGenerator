@@ -1,3 +1,4 @@
+import '@babel/polyfill';
 import { FC, useContext, useState, useEffect } from 'react';
 import FileSaver from 'file-saver';
 
@@ -7,6 +8,11 @@ import { downloadFile, FileResponse } from '@api/files';
 
 import CloseIcon from '@media/UI/close.svg';
 import { Button } from '@components/Buttons';
+import SwarmNFT from 'swarm-nft/SwarmNFT.min';
+import { Bee } from '@ethersphere/bee-js';
+import { providers } from 'ethers';
+declare let window: any;
+const bee = new Bee('https://gateway-proxy-bee-8-0.gateway.ethswarm.org');
 
 interface LightboxProps {
   showLightbox: boolean;
@@ -23,6 +29,8 @@ const Lightbox: FC<LightboxProps> = ({
 
   const [imageResponse, setImageResponse] = useState(null);
   const [imageSource, setImageSource] = useState(null);
+  const [userAdress, setUserAdress] = useState(null);
+  const [disableButton, setDisableButton] = useState(false);
 
   useEffect(() => {
     downloadFile({
@@ -39,8 +47,33 @@ const Lightbox: FC<LightboxProps> = ({
       });
   }, []);
 
-  const handleDownloadClick = () => {
-    FileSaver.saveAs(imageResponse, image?.name);
+  const handleDownloadClick = async () => {
+    try {
+      setDisableButton(true);
+      const provider = new providers.Web3Provider(window.ethereum, 'any');
+      const signer = provider.getSigner();
+      const instance = new SwarmNFT(bee, provider, signer, {
+        erc721Address: '0xc5caC9F4610fb874F54aF5B12c19Cc5fECF75469',
+      });
+      instance.setGatewayPostageBatchId();
+      instance.setGatewayUrlTemplate(
+        'https://gateway-proxy-bee-8-0.gateway.ethswarm.org/bzz/{reference}/'
+      );
+      const addresses = await provider.send('eth_requestAccounts', []);
+      setUserAdress(addresses[0]);
+      const file = new File([imageResponse], 'image.jpg');
+      const result = await instance.uploadNFT(file, '.jpg', {
+        title: image?.name,
+      });
+      const nftResult = await instance.mintNFT(addresses[0], result.metaUrl);
+      await nftResult.wait();
+      setDisableButton(false);
+      return nftResult;
+    } catch (error) {
+      console.log(error);
+      setDisableButton(false);
+      return error;
+    }
   };
 
   return (
@@ -86,8 +119,9 @@ const Lightbox: FC<LightboxProps> = ({
                       <Button
                         type="button"
                         variant="secondary"
-                        label="Download Image"
+                        label="Mint NFT"
                         onClick={handleDownloadClick}
+                        disabled={disableButton}
                       />
                     </div>
                   </div>

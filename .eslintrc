@@ -9,7 +9,10 @@
   ],
   "plugins": ["@typescript-eslint", "react", "prettier"],
   "rules": {
-    "prettier/prettier": "error",
+    "prettier/prettier": ["error",
+      {
+        "endOfLine": "auto"
+      }],
     "no-confusing-arrow": "off",
     "react/display-name": "off",
     "react/jsx-filename-extension": [

@@ -6,7 +6,7 @@ const GalleryHeader: FC = () => {
   return (
     <div className="w-full mt-4 mb-6">
       <h2 className="font-semibold text-2xl text-color-accents-purple-black">
-        Your Photos
+        Your images
       </h2>
 
       <span className="inline-block w-28 my-2 border-b border-main-purple">

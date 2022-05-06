@@ -16,7 +16,7 @@ const EmptyCard: FC = () => {
           </h2>
 
           <p className="mt-2 font-normal text-xs text-main-purple text-center">
-            This folder has no photos
+            This folder has no images
           </p>
         </div>
       </div>
